@@ -11,6 +11,9 @@ async def generating(secret: str, code_phrase: str) -> dict:
     Processes request and makes a query
     to the database for a record.
 
+    Example:
+    /generate?secret=super_secret_message&code_phrase=code_password
+
     :param secret: secret message
     :type secret: str
     :param code_phrase: for access control
@@ -27,6 +30,9 @@ async def geting(secret_id: str, code_phrase: str) -> dict:
     """
     Processes the request and makes a query
     to the database for reading.
+
+    Example:
+    /secrets/5eb82d06b893f7227b4f73ff?code_phrase=code_password
 
     :param secret_id:
     :type secret_id: str
