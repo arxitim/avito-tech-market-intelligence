@@ -1,5 +1,6 @@
 from datetime import datetime
 from bson.objectid import ObjectId
+from base64 import b64decode, b64encode
 
 import pymongo
 
@@ -20,7 +21,9 @@ class MongoDB(object):
         # secrets.create_index("dt_create", expireAfterSeconds=5 * 60)
 
         timestamp = datetime.utcnow()
-        secret = {"secret": secret, "code_phrase": code_phrase, "dt_create": timestamp}
+        encrypted_secret = b64encode(secret.encode("UTF-8"))
+
+        secret = {"secret": encrypted_secret, "code_phrase": code_phrase, "dt_create": timestamp}
         secret_id = secrets.insert_one(secret).inserted_id
         return str(secret_id)
 
@@ -31,6 +34,7 @@ class MongoDB(object):
         secret = secrets.find_one({"_id": secret_id})
 
         if code_phrase == secret["code_phrase"]:
-            return secret["secret"]
+            secrets.delete_one({"_id": secret_id})
+            return b64decode(secret["secret"]).decode("UTF-8")
         else:
             return {"error": "wrong code_phrase!"}
