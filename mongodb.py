@@ -73,6 +73,8 @@ class MongoDB(object):
         secrets = self._instance.db.secrets
 
         secret = secrets.find_one({"_id": secret_id})
+        if not secret:
+            return "there is no secret with this id!"
 
         if code_phrase == secret["code_phrase"]:
             secrets.delete_one({"_id": secret_id})  # the record can only be read once
